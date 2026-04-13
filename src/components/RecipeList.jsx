@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import Card from './RecipeCard'
-import SearchBar from './SearchBar'
+import { Card } from './RecipeCard'
+import { Link } from 'react-router-dom'
+import { SearchBar } from './SearchBar'
 
 
 function RecipeList(){
@@ -28,6 +29,7 @@ const [search, setSearch]=useState("")
 
       <h1 className="text-4x1 font-bold text-center text-blue-600">Recipe Dashboard</h1>
         <SearchBar search={search} setSearch={setSearch}/>
+        <Link to="/favorites">Favorites</Link>
         
 
           <div className="card-container">
