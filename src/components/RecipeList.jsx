@@ -1,60 +1,88 @@
-import { useState, useEffect } from 'react'
-import { Card } from './RecipeCard'
-import { Link } from 'react-router-dom'
-import { SearchBar } from './SearchBar'
+import { useState, useEffect } from "react";
+import Card from "./RecipeCard";
+import { Link } from "react-router-dom";
+import { SearchBar } from "./SearchBar";
 
+function RecipeList() {
+  const [recipes, setRecipes] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
-function RecipeList(){
-const [recipes, setRecipes] = useState([])
-const [search, setSearch]=useState("")
-  
+  // Convert TheMealDB meal into a cleaner object
+  function transformMeal(meal) {
+    const ingredients = [];
 
-    useEffect(()=>{
-      fetch("https://www.themealdb.com/api/json/v1/1/search.php?s=")
-      .then((response)=>response.json())
-      .then((data)=>{
-        setRecipes(data.meals || []);//store in state
-      })
-      .catch((error)=>{
-        console.error("Error fetching recipes;", error);
-      });
-    }, [])//runs once when component mounts
+    for (let i = 1; i <= 20; i++) {
+      const ingredient = meal[`strIngredient${i}`];
+      const measure = meal[`strMeasure${i}`];
 
-      const filteredRecipes= recipes.filter(recipe=>
-    recipe.strMeal.toLowerCase().includes(search.toLowerCase()))
-      
-
-      return(
-    <div className="App">
-
-      <h1 className="text-4x1 font-bold text-center text-blue-600">Recipe Dashboard</h1>
-        <SearchBar search={search} setSearch={setSearch}/>
-        <Link to="/favorites">Favorites</Link>
-        
-
-          <div className="card-container">
-
-          {filteredRecipes.length > 0 ?(
-          
-          filteredRecipes.map((recipe)=>(
-            <Card
-            key={recipe.idMeal}
-            id={recipe.idMeal}
-            title={recipe.strMeal}
-            img={recipe.strMealThumb}
-            
-            />
-
-            
-          ))
-        ) : (
-            <p>No recipes found.</p>
-        )}
-        </div>
-        </div>
-      )
+      if (ingredient && ingredient.trim()) {
+        ingredients.push({
+          ingredient,
+          measure: measure || ""
+        });
+      }
     }
 
+    return {
+      id: meal.idMeal,
+      title: meal.strMeal,
+      image: meal.strMealThumb,
+      category: meal.strCategory,
+      area: meal.strArea,
+      instructions: meal.strInstructions,
+      ingredients
+    };
+  }
 
+  useEffect(() => {
+    fetch("https://www.themealdb.com/api/json/v1/1/search.php?s=")
+      .then((response) => response.json())
+      .then((data) => {
+        const cleanedMeals = (data.meals || []).map(transformMeal);
+        setRecipes(cleanedMeals);
+      })
+      .catch((error) => {
+        console.error("Error fetching recipes:", error);
+      });
+  }, []);
 
-    export default RecipeList
+  const filteredRecipes = recipes.filter((recipe) => {
+    const search = searchTerm.toLowerCase();
+
+    return (
+      recipe.title.toLowerCase().includes(search) ||
+      recipe.ingredients.some((item) =>
+        item.ingredient.toLowerCase().includes(search)
+      )
+    );
+  });
+
+  return (
+    <div className="App">
+      <h1 className="text-4x1 font-bold text-center text-blue-600">
+        Recipe Dashboard
+      </h1>
+
+      <SearchBar search={searchTerm} setSearch={setSearchTerm} />
+
+      <Link to="/favorites">Favorites ❤️</Link>
+
+      <div className="card-container">
+        {filteredRecipes.length > 0 ? (
+          filteredRecipes.map((recipe) => (
+            <Card
+              key={recipe.id}
+              id={recipe.id}
+              title={recipe.title}
+              img={recipe.image}
+            />
+          ))
+        ) : (
+          <p>No recipes found.</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default RecipeList;

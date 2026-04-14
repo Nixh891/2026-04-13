@@ -1,30 +1,37 @@
-import { useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect } from "react";
 
-const [favourites, setFavourites]= useState(() => {
-    const saved= localStorage.getItem("favourites");
+const FavoritesContext = createContext();
+
+export function FavoritesProvider({ children }) {
+
+  const [favorites, setFavorites] = useState(() => {
+    const saved = localStorage.getItem("favorites");
     return saved ? JSON.parse(saved) : [];
-})
+  });
 
-useEffect(() => {
-    localStorage.setItem("favourites", JSON.stringify(favourites));
+  useEffect(() => {
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+  }, [favorites]);
 
-}, [favourites])
+  function toggleFavorite(id) {
+    setFavorites((prev) =>
+      prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : [...prev, id]
+    );
+  }
 
-function addFavourite(item){
-    setFavourites([...favourites, item])
+  function isFavorite(id) {
+    return favorites.includes(id);
+  }
+
+  return (
+    <FavoritesContext.Provider value={{ favorites, toggleFavorite, isFavorite }}>
+      {children}
+    </FavoritesContext.Provider>
+  );
 }
 
-return(
-    <div>
-        <button onClick={()=> addFavourite("Pizza")}>Add To Favourites</button>
-
-        <ul>
-            {favourites.map((item,i)=> (
-                <li key={i}>{item}</li>
-            ))}
-        </ul>
-   
-    </div>
-)
-
-export default favourites;
+export function useFavorites() {
+  return useContext(FavoritesContext);
+}

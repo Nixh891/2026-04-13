@@ -3,11 +3,14 @@ import { RecipePage } from './components/RecipePage'
 import { RecipeList } from './components/RecipeList'
 import { FavoritesProvider } from './components/FavoritesContext'
 import { FavoritesPage } from './components/FavoritesPage'
+import { Navbar } from "./components/Navbar"
 import './App.css'
 
 function App() {
   
   return (
+<>
+    <Navbar />
 
     <FavoritesProvider>
     <Routes>
@@ -19,7 +22,7 @@ function App() {
       </Routes>
       </FavoritesProvider>
       
-    
+ </>   
   
 
   

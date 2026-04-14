@@ -1,42 +1,66 @@
-import { useParams } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 
-function RecipePage(){
-    const { id }= useParams()
-    const [recipe, setRecipe] = useState(null)
+function RecipePage() {
+  const { id } = useParams();
+  const [recipe, setRecipe] = useState(null);
 
-    useEffect(()=>{
-        fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`)
-        .then(res=>res.json())
-        .then(data=> setRecipe(data.meals[0]))
-        .catch(err=> console.error("Error fetching recipe:", err))
-    }, [id])
+  // same transformation logic used in RecipeList
+  function transformMeal(meal) {
+    const ingredients = [];
 
-    if(!recipe) return<p>Loading recipe...</p>
+    for (let i = 1; i <= 20; i++) {
+      const ingredient = meal[`strIngredient${i}`];
+      const measure = meal[`strMeasure${i}`];
 
-    return(
-        <div classNAme="recipe-page">
-            <h1>{recipe.strMeal}</h1>
-            <img src={recipe.streMealThumb} alt={recipe.strMeal}/>
-            <h2>Intructions</h2>
-            <p>{recipe.strInstructions}</p>
+      if (ingredient && ingredient.trim()) {
+        ingredients.push({
+          ingredient,
+          measure: measure || ""
+        });
+      }
+    }
 
-            <h2>Ingredients</h2>
-            <ul>
-                {Array.from({ length: 20}, (_, i)=> i+1)
-                .map(i=>{
-                    const ingredient = recipe[`strIngredient${id}`]
-                    const measure = recipe[`strMeasure ${i}`]
+    return {
+      id: meal.idMeal,
+      title: meal.strMeal,
+      image: meal.strMealThumb,
+      instructions: meal.strInstructions,
+      ingredients
+    };
+  }
 
-                    if (ingredient && ingredient.trim() !== ""){
-                        return <li key={i}>{ingredient} - {measure}</li>
-                    }
-                    return null
-                })}
-            </ul>
-        </div>
-    )
+  useEffect(() => {
+    fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const cleanedMeal = transformMeal(data.meals[0]);
+        setRecipe(cleanedMeal);
+      })
+      .catch((err) => console.error("Error fetching recipe:", err));
+  }, [id]);
+
+  if (!recipe) return <p>Loading recipe...</p>;
+
+  return (
+    <div className="recipe-page">
+      <h1>{recipe.title}</h1>
+
+      <img src={recipe.image} alt={recipe.title} />
+
+      <h2>Instructions</h2>
+      <p>{recipe.instructions}</p>
+
+      <h2>Ingredients</h2>
+      <ul>
+        {recipe.ingredients.map((item, index) => (
+          <li key={index}>
+            {item.ingredient} - {item.measure}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
-
-export default RecipePage
+export default RecipePage;
