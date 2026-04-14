@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { useFavorites } from "../components/FavoritesContext"
+import { useFavorites } from "./FavoritesContext"
 
 function Card({id, title, img}){
 

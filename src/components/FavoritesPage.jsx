@@ -1,7 +1,7 @@
-import { useFavorites } from "../components/FavoritesContext";
-import Card from "../components/Card";
+import { useFavorites } from "./FavoritesContext";
+import Card from "./RecipeCard";
 
-function FavoritesPage({ recipes }) {
+function FavoritesPage({recipes}) {
 
   const { favorites } = useFavorites();
 
