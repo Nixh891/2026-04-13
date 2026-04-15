@@ -58,30 +58,47 @@ function RecipeList() {
   });
 
   return (
-    <div className="App">
-      <h1 className="text-4x1 font-bold text-center text-blue-600">
-        Recipe Dashboard
-      </h1>
+   <div className="app-container">
 
-      <SearchBar search={searchTerm} setSearch={setSearchTerm} />
+  <header className="app-header">
+    <h1 className="app-title">Recipe Dashboard</h1>
 
-      <Link to="/favorites">Favorites ❤️</Link>
+    <Link to="/favorites" className="favorites-link">
+      ❤️ Favorites
+    </Link>
+  </header>
 
-      <div className="card-container">
-        {filteredRecipes.length > 0 ? (
-          filteredRecipes.map((recipe) => (
-            <Card
-              key={recipe.id}
-              id={recipe.id}
-              title={recipe.title}
-              img={recipe.image}
-            />
-          ))
-        ) : (
-          <p>No recipes found.</p>
-        )}
-      </div>
+  <div className="search-section">
+    <SearchBar search={searchTerm} setSearch={setSearchTerm} />
+  </div>
+
+  <main className="recipe-container">
+    <div className="recipe-grid">
+     <p className="results-count">
+  {filteredRecipes.length} recipes found
+    </p>
+
+      {filteredRecipes.length > 0 ? (
+        filteredRecipes.map((recipe) => (
+          <Card
+            key={recipe.id}
+            id={recipe.id}
+            title={recipe.title}
+            img={recipe.image}
+          />
+        ))
+      ) : (
+        <div className="empty-state">
+          <p>No recipes found.
+            Try Searching for something else.
+          </p>
+        </div>
+      )}
+
     </div>
+  </main>
+
+</div>
   );
 }
 

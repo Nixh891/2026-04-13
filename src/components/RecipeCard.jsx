@@ -13,25 +13,38 @@ function Card({id, title, img}){
       const favorite= isFavorite(id)
 
     return(
-        <div className="card">
+        <div className="recipe-card" onClick={openRecipe}>
+  
+  <div className="image-wrapper">
+    <img src={img} alt={title} loading="lazy" />
 
-          <button
-            className="favorite-btn"
-            onClick={(e)=>{
-              e.stopPropagation()
-              toggleFavorite(id)}}
-            aria-label="Toggle favorite"
-            >
-              {favorite ? "❤️" : "🤍"}
-              </button>
+    <button
+      className="favorite-btn"
+      onClick={(e) => {
+        e.stopPropagation();
+        toggleFavorite(id);
+      }}
+      aria-label="Toggle favorite"
+    >
+      {favorite ? "❤️" : "🤍"}
+    </button>
+  </div>
 
-            <h2>{title}</h2>
-            <img src={img} alt={title}/>
+  <div className="card-content">
+    <h3 className="recipe-title">{title}</h3>
 
-            <button onClick={openRecipe}>View Full Recipe
+    <button
+      className="view-btn"
+      onClick={(e) => {
+        e.stopPropagation();
+        openRecipe();
+      }}
+    >
+      View Recipe
+    </button>
+  </div>
 
-            </button>
-        </div>
+</div>
     )
 }
 
