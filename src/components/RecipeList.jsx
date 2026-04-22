@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Card from "./RecipeCard";
-import { Link } from "react-router-dom";
-import { SearchBar } from "./SearchBar";
+import  {Link } from "react-router-dom";
+import SearchBar from "./SearchBar";
 
 function RecipeList() {
   const [recipes, setRecipes] = useState([]);

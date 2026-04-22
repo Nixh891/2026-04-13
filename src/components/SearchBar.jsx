@@ -1,18 +1,18 @@
 
 
-function SearchBar({search, setSearch}){
+export default function SearchBar({search, setSearch}){
 
     return(
         <div className="search-bar">
             <input
         type="text"
+        aria-label="Search recipes"
         placeholder="Search recipes..."
-        value={searchTerm}
-        onChange={(e)=> setSearchTerm(e.target.value)} />
+        value={search}
+        onChange={(e)=> setSearch(e.target.value)} />
 
         </div>
     )
 }
 
 
-export default SearchBar
